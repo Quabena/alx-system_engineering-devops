@@ -1,2 +1,2 @@
 #!/bin/bash
-ls -1dAF -- /boot/* ./ ../
+ls -1dAF -- ./ ../ /boot/
