@@ -8,3 +8,4 @@ SHELL PERMISSIONS
 6-multiples_permissions -  adds execute permission to the owner and the group owner, and read permission to other users, to the file hello
 7-everybody - adds execution permission to the owner and the other users, to the file hello
 8-James_bond - gives no permission to the owner and group, but all permissions to Other users
+9-John_Doe - set the mode of the file hello to -rwxr-x-wx echo 9-John_Doe - set the mode of the file hello to -rwxr-x-wx
