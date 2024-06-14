@@ -9,3 +9,5 @@ SHELL PERMISSIONS
 7-everybody - adds execution permission to the owner and the other users, to the file hello
 8-James_bond - gives no permission to the owner and group, but all permissions to Other users
 9-John_Doe - set the mode of the file hello to -rwxr-x-wx echo 9-John_Doe - set the mode of the file hello to -rwxr-x-wx
+10-mirror_permissions - sets the mode of the hello same as olleh mode
+11-directories_permissions - adds execute permission to all subdirectories of the current directory for the owner, the group owner and all other users
