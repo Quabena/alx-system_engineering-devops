@@ -7,3 +7,4 @@ SHELL PERMISSIONS
 5-execute - adds execute permission to the owner of the file hello
 6-multiples_permissions -  adds execute permission to the owner and the group owner, and read permission to other users, to the file hello
 7-everybody - adds execution permission to the owner and the other users, to the file hello
+8-James_bond - gives no permission to the owner and group, but all permissions to Other users
