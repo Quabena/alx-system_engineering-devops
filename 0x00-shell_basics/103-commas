@@ -1,2 +1,2 @@
 #!/bin/bash
-ls -d -- ./ ../ *[0-9]* *[A-Za-z]* | tr '\n',
+ls -lap1m
