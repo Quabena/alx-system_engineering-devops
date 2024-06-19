@@ -4,3 +4,4 @@
 3-paths - counts the number of directories in the PATH.
 4-global_variables - prints all global variables
 5-local_variables - prints the local variables
+7-create_global_variable - create a new global variable with Name: BEST and Value: School
