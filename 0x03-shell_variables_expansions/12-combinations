@@ -1,0 +1,2 @@
+#!/bin/bash
+for combo in {a..z}{a..z} if [ "$combo" != "oo"] then echo $combo
