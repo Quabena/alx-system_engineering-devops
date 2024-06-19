@@ -15,3 +15,4 @@
 101-rot13 - encodes and decodes text using the rot13 encryption, assuming ASCII.
 102-odd - prints every other line from the input, starting with the first line.
 103-water_and_stir - adds the two numbers stored in the environment variables WATER and STIR and prints the result.
+6-create_local_variable - creates a new local variable
