@@ -1,2 +1,2 @@
 #!/bin/bash
-count=$(echo $PATH | tr ':' '\n' | grep -c '[^[:space:]]')
+echo $PATH | tr : '\n' | wc -l
