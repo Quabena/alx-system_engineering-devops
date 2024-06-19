@@ -3,3 +3,4 @@
 2-path - add /action to the PATH . /action is the last directory shell looks into when looking for a program.
 3-paths - counts the number of directories in the PATH.
 4-global_variables - prints all global variables
+5-local_variables - prints the local variables
