@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+# A script that displays the content of the current directory without hidden files,i
+# showing only the part of the name after the first dash.
+
+for item in *; do
+  if [[ -f "$item" || -d "$item" ]]; then
+    name="${item#*-}"  # Extract the part after the first dash
+    if [[ "$name" != "$item" ]]; then  # Check if there was a dash in the name
+      echo "$name"
+    fi
+  fi
+done
