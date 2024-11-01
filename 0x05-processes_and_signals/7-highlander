@@ -1,14 +1,8 @@
 #!/usr/bin/env bash
 # A script that displays "To infinity and beyond" indefinitely and responds to SIGTERM.
 
-# Function to handle SIGTERM
-handle_sigterm() {
-    echo "I am invincible!!!"
-    exit 0
-}
-
 # Trap SIGTERM signal
-trap 'handle_sigterm' SIGTERM
+trap 'echo "I am invincible!!!"' SIGTERM
 
 # Infinite loop to display the message
 while true; do
