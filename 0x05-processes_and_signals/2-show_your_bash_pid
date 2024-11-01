@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# This script displays the PID of any currently running Bash processes.
+# shellcheck disable=SC2009
+
+ps -e -f --forest | grep "[b]ash"
