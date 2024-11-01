@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
 # A script that displays all currently running processes in a hierarchical format.
+#ps -e -f --forest
 
-ps -e -f --forest
+ps auxf
