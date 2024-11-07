@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# This script displays all active IPv4 IP addresses on the machine.
+
+# Using `ip a` to display all network interfaces and filter out IPv4 addresses
+ip a | grep -oP 'inet \K[\d.]+'

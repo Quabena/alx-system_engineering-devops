@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+# This script listens on port 98 on localhost and displays any incoming text.
+
+# Using nc (Netcat) to listen on localhost at port 98
+# The '-l' flag makes nc listen, and '-p' specifies the port
+# The script will display whatever is typed into the telnet connection
+nc -l -p 98
