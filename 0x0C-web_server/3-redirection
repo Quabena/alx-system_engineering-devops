@@ -1,34 +1,36 @@
 #!/usr/bin/env bash
-# Configures an Nginx server to redirect requests from /redirect_me to another page with a 301 Moved Permanently response
+# Configures a new ubuntu machine by installing
+# Nginx where it should be listening on port 80
+# Serve a page that would return a Hello World string
+#
 
-# Update the system and install Nginx
+
 echo -e "Updating and installing Nginx.\n"
-sudo apt-get update -y -qq && sudo apt-get install nginx -y
+sudo apt-get update -y -qq && \
+         sudo apt-get install nginx -y
 
-# Allow Nginx through the firewall
-echo -e "\nAllowing Nginx HTTP through the firewall.\n"
+echo -e "\nSetting up some minor stuff.\n"
+
+# starting nginx service
+sudo service nginx start
+
+# allowing nginx on firewall
 sudo ufw allow 'Nginx HTTP'
 
-# Set up the redirect by modifying the Nginx configuration
-echo -e "\nSetting up the redirect rule in Nginx.\n"
+# Give the user ownership to website files for easy editing
+sudo chown -R "$USER":"$USER" /var/www/html
+sudo chmod -R 755 /var/www
 
-# Backup the default configuration before modifying it
-sudo cp /etc/nginx/sites-available/default /etc/nginx/sites-available/default.bckp
+# Backup default index
+cp /var/www/html/index.nginx-debian.html /var/www/html/index.nginx-debian.html.bckp
 
-# Use sed to replace or add a new location block for the redirect
-sudo sed -i '/location \/ {/a \ \tlocation /redirect_me/ {\n\t\treturn 301 https://www.youtube.com/watch?v=QH2-TGUlwu4;\n\t}' /etc/nginx/sites-available/default
+# Creating new index
+echo -e "Hello World!" > /var/www/html/index.nginx-debian.html
 
-# Check if the changes were applied
-echo -e "\nModified Nginx configuration:\n"
-grep -A 10 "location /redirect_me" /etc/nginx/sites-available/default
+# Setting up /redirect_me to a youtube video
+sudo sed -i '24i\       rewrite ^/redirect_me https://www.youtube.com/watch?v=QH2-TGUlwu4 permanent;' /etc/nginx/sites-available/default
 
-# Test Nginx configuration for syntax errors
-echo -e "\nTesting Nginx configuration for syntax errors.\n"
-sudo nginx -t
+# Restarting nginx
+sudo service nginx restart
 
-# If the configuration is correct, reload Nginx to apply changes
-echo -e "\nReloading Nginx to apply changes.\n"
-sudo service nginx reload
-
-# Confirm the change was successfully made
-echo -e "\nRedirect setup completed. ✅\n"
+echo -e "\nCompleted. ✅\n"
