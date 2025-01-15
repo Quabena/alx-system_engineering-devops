@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+# A script that installs and configures Nginx on an Ubuntu machine, ensuring it listens on port 80
+# and returns a page containing the string "Hello World!" at the root.
+
+# Updating package lists and install Nginx
+apt update -y
+apt install nginx -y
+
+# Removing default nginx configuration file
+rm /etc/nginx/sites-enabled/default
+
+# Creating a custom Nginx configuration file
+cat <<EOF > /etc/nginx/sites-available/default
+server {
+    listen 80;
+    root /var/www/html;
+    index index.html;
+    
+    server_name _;
+
+    location / {
+        return 200 'Hello World!';
+    }
+}
+EOF
+
+# Ensuring Nginx is listening on port 80
+nginx -t
+
+# Restarting Nginx without using systemctl
+nginx -s reload
+
+# Ensuring Nginx starts on boot (using update-rc.d since systemctl is not allowed)
+update-rc.d nginx defaults
+
+# Outputting the success message for verification
+echo "Nginx is installed and configured."
