@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+# Configures Nginx to have a custom 404 page containing the string "Ceci n'est pas une page"
+
+# Update the system and install Nginx
+echo -e "Updating and installing Nginx.\n"
+sudo apt-get update -y -qq && sudo apt-get install nginx -y
+
+# Allow Nginx through the firewall
+echo -e "\nAllowing Nginx HTTP through the firewall.\n"
+sudo ufw allow 'Nginx HTTP'
+
+# Set up a custom 404 page by modifying the Nginx configuration
+echo -e "\nSetting up the custom 404 page in Nginx.\n"
+
+# Backup the default configuration before modifying it
+sudo cp /etc/nginx/sites-available/default /etc/nginx/sites-available/default.bckp
+
+# Create a custom 404 error page
+echo -e "Ceci n'est pas une page" | sudo tee /var/www/html/404.html > /dev/null
+
+# Modify the Nginx configuration to use the custom 404 page
+sudo sed -i '/server_name _;/a \ \terror_page 404 /404.html;' /etc/nginx/sites-available/default
+sudo sed -i '/location \/ {/a \ \tlocation = \/404.html {\n\t\troot \/var\/www\/html;\n\t\tinternal;\n\t}' /etc/nginx/sites-available/default
+
+# Check if the changes were applied
+echo -e "\nModified Nginx configuration:\n"
+grep -A 10 "error_page 404" /etc/nginx/sites-available/default
+
+# Test Nginx configuration for syntax errors
+echo -e "\nTesting Nginx configuration for syntax errors.\n"
+sudo nginx -t
+
+# If the configuration is correct, reload Nginx to apply changes
+echo -e "\nReloading Nginx to apply changes.\n"
+sudo service nginx reload
+
+# Confirm the custom 404 page setup is completed
+echo -e "\nCustom 404 page setup completed. ✅\n"
+
