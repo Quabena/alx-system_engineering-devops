@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+# A script that installs Apache, creates a Hello ALX page, and starts Apache in the container.
+
+# Updating the package list and install Apache if it's not installed
+apt-get update
+apt-get install apache2 -y
+
+# Creating the 'Hello ALX' page
+echo "Hello ALX" > /var/www/html/index.html
+
+# Starting the Apache service
+service apache2 start
