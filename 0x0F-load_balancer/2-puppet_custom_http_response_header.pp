@@ -1,37 +1,29 @@
-# 2-puppet_custom_http_response_header.pp
+# Custom HTTP header in a nginx server
 
-# Ensure that nginx is installed
+# update ubuntu server
+exec { 'update server':
+  command  => 'apt-get update',
+  user     => 'root',
+  provider => 'shell',
+}
+->
+# install nginx web server on server
 package { 'nginx':
-  ensure => installed,
+  ensure   => present,
+  provider => 'apt'
 }
-
-# Ensure the Nginx service is running and enabled
+->
+# custom Nginx response header (X-Served-By: hostname)
+file_line { 'add HTTP header':
+  ensure => 'present',
+  path   => '/etc/nginx/sites-available/default',
+  after  => 'listen 80 default_server;',
+  line   => 'add_header X-Served-By $hostname;'
+}
+->
+# start service
 service { 'nginx':
-  ensure  => running,
+  ensure  => 'running',
   enable  => true,
-  require => Package['nginx'],
+  require => Package['nginx']
 }
-
-# Create a custom Nginx configuration with the X-Served-By header
-file { '/etc/nginx/sites-available/default':
-  ensure  => file,
-  content => template('nginx/custom_header.conf.erb'),
-  notify  => Service['nginx'],  # Notify Nginx to reload after changes
-}
-
-# Ensure that the nginx configuration is valid
-exec { 'nginx_test':
-  command => '/usr/sbin/nginx -t',
-  path    => ['/usr/sbin', '/usr/bin'],
-  onlyif  => '/usr/sbin/nginx -t',
-  require => File['/etc/nginx/sites-available/default'],
-}
-
-# Reload Nginx if configuration is correct
-service { 'nginx_reload':
-  ensure      => 'running',
-  name        => 'nginx',
-  subscribe   => Exec['nginx_test'],  # Reload on successful configuration test
-  refreshonly => true,
-}
-
