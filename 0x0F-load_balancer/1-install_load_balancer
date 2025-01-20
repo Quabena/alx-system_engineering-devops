@@ -1,0 +1,63 @@
+#!/usr/bin/env bash
+# This script installs and configures HAProxy to balance traffic between web-01 and web-02
+
+# Updating Packages
+sudo apt-get update -y
+sudo apt-get upgrade -y
+
+# Installing HAProxy
+sudo apt-get install -y haproxy
+
+# Configuring HAProxy to distribute traffic to web-01 and web-02 using round-robin
+cat <<EOF | sudo tee /etc/haproxy/haproxy.cfg
+# Global Settings
+global
+    log /dev/log    local0
+    log /dev/log    local1 notice
+    chroot /var/lib/haproxy
+    stats socket /run/haproxy.sock mode 600 level admin
+    stats timeout 30s
+    user haproxy
+    group haproxy
+    daemon
+
+# Default Settings
+defaults
+    log     global
+    option  httplog
+    option  dontlognull
+    timeout connect 5000ms
+    timeout client  50000ms
+    timeout server  50000ms
+
+# Frontend for incoming HTTP traffic
+frontend http_front
+    bind *:80
+    default_backend http_back
+
+# Backend with round-robin load balancing
+backend http_back
+    balance roundrobin
+    server web-01 [STUDENT_ID]-web-01:80 check
+    server web-02 [STUDENT_ID]-web-02:80 check
+
+# Enabling HAProxy Stats (optional)
+# Listen on a port to view HAProxy stats
+listen stats
+    bind *:8080
+    stats enable
+    stats uri /stats
+    stats hide-version
+    stats auth admin:password
+EOF
+
+# Enabling HAProxy to start on boot
+sudo systemctl enable haproxy
+
+# Starting HAProxy service
+sudo systemctl start haproxy
+
+# Testing the HAProxy configuration
+sudo systemctl status haproxy
+
+echo "HAProxy has been installed and configured successfully."
