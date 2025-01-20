@@ -1,63 +1,60 @@
 #!/usr/bin/env bash
-# This script installs and configures HAProxy to balance traffic between web-01 and web-02
+# install load balancer
 
-# Updating Packages
-sudo apt-get update -y
-sudo apt-get upgrade -y
 
-# Installing HAProxy
-sudo apt-get install -y haproxy
 
-# Configuring HAProxy to distribute traffic to web-01 and web-02 using round-robin
-cat <<EOF | sudo tee /etc/haproxy/haproxy.cfg
-# Global Settings
-global
-    log /dev/log    local0
-    log /dev/log    local1 notice
-    chroot /var/lib/haproxy
-    stats socket /run/haproxy.sock mode 600 level admin
-    stats timeout 30s
-    user haproxy
-    group haproxy
-    daemon
+echo -e "Updating and doing some minor checks...\n"
 
-# Default Settings
+function install() {
+        command -v "$1" &> /dev/null
+
+        #shellcheck disable=SC2181
+        if [ $? -ne 0 ]; then
+                echo -e "       Installing: $1\n"
+                sudo apt-get update -y -qq && \
+                        sudo apt-get install -y "$1" -qq
+                echo -e "\n"
+        else
+                echo -e "       ${1} is already installed.\n"
+        fi
+}
+
+install haproxy #install haproxy
+
+echo -e "\nSetting up some minor stuff.\n"
+
+# backup default server config file
+sudo cp /etc/haproxy/haproxy.cfg haproxy_default.backup
+
+server_config=\
+"
 defaults
-    log     global
-    option  httplog
-    option  dontlognull
-    timeout connect 5000ms
-    timeout client  50000ms
-    timeout server  50000ms
+  mode http
+  timeout client 15s
+  timeout connect 10s
+  timeout server 15s
+  timeout http-request 10s
 
-# Frontend for incoming HTTP traffic
-frontend http_front
+frontend web-with-joe-tech-frontend
     bind *:80
-    default_backend http_back
+    default_backend web-with-joe-tech-backend
 
-# Backend with round-robin load balancing
-backend http_back
+backend web-with-joe-tech-backend
     balance roundrobin
-    server web-01 [STUDENT_ID]-web-01:80 check
-    server web-02 [STUDENT_ID]-web-02:80 check
+    server 483712-web-01 54.90.63.148:80 check
+    server 483712-web-02 100.26.173.111:80 check
+"
 
-# Enabling HAProxy Stats (optional)
-# Listen on a port to view HAProxy stats
-listen stats
-    bind *:8080
-    stats enable
-    stats uri /stats
-    stats hide-version
-    stats auth admin:password
-EOF
+# shellcheck disable=SC2154
+echo "$server_config" | sudo dd status=none of=/etc/haproxy/haproxy.cfg
 
-# Enabling HAProxy to start on boot
-sudo systemctl enable haproxy
+# enable haproxy to be started by init script
+echo "ENABLED=1" | sudo dd status=none of=/etc/default/haproxy
 
-# Starting HAProxy service
-sudo systemctl start haproxy
+echo "configured - Roundrobin On web-01 & web-02"
 
-# Testing the HAProxy configuration
-sudo systemctl status haproxy
-
-echo "HAProxy has been installed and configured successfully."
+if [ "$(pgrep -c haproxy)" -le 0 ]; then
+        sudo service haproxy start
+else
+        sudo service haproxy restart
+fi
