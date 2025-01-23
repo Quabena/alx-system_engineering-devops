@@ -1,10 +1,6 @@
 #!/usr/bin/env bash
 # This script enables the default site and restarts Nginx to listen on port 80
-# sudo ln -sf /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
-# sudo service nginx stop
-# sudo service nginx start
-
-# A different implementation
-sed -i 's/8080/80/g' /etc/nginx/sites-enabled/default
-service nginx restart
-pkill -o nginx
+sudo rm -f /etc/nginx/sites-enabled/default
+sudo ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
+sudo service nginx stop
+sudo service nginx start
