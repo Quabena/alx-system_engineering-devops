@@ -1,5 +1,8 @@
 #!/usr/bin/python3
-"""Accessing a REST API for todo lists of employees"""
+"""
+Script that retrieves TODO list progress for a given
+employee ID using a REST API.
+"""
 
 import json
 import requests
