@@ -1,9 +1,6 @@
-# A puppet manifest for web stack debugging
+# This manifest Fixes the `phpp` extensions to `php` in the WordPress file `wp-settings.php`.
+
 exec { 'fix-wordpress':
-  environment => ['DIR=/var/www/html/wp-settings.php',
-                  'OLD=phpp',
-                  'NEW=php'],
-  command     => 'sudo sed -i "s/$OLD/$NEW/" $DIR',
-  path        => ['/usr/bin', '/bin'],
-  returns     => [0, 1]
+  command => 'sed -i s/phpp/php/g /var/www/html/wp-settings.php',
+  path    => '/usr/local/bin/:/bin/'
 }
