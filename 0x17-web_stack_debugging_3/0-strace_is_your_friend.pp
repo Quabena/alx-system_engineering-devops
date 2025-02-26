@@ -1,4 +1,4 @@
-# Web Stack debugging
+# A puppet manifest for web stack debugging
 exec { 'fix-wordpress':
   environment => ['DIR=/var/www/html/wp-settings.php',
                   'OLD=phpp',
